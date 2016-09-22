@@ -1,0 +1,2 @@
+Armazem - Fica no ID 19
+Celeiro - Fica no ID 20 e a(construcao) = 11;
