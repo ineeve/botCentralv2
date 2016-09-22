@@ -1,6 +1,51 @@
 https://travian.kirilloid.ru/build.php#mb=1&s=1.44
 
 
-create table quartelInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table alvenariaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
 .separator ";"
-.import quartelTable.csv quartelInfo
+.import ferroInfo.csv ferroInfo
+.import fundicaoInfo.csv fundicaoInfo
+.import grandeArmazemInfo.csv grandeArmazemInfo
+.import grandeCavalaricaInfo.csv grandeCavalaricaInfo
+.import grandeCeleiroInfo.csv grandeCeleiroInfo
+.import grandeQuartelInfo.csv grandeQuartelInfo
+.import mansaoHeroiInfo.csv mansaoHeroiInfo
+.import maravilhaMundoInfo.csv maravilhaMundoInfo
+.import mercadoInfo.csv mercadoInfo
+.import moinhoInfo.csv moinhoInfo
+.import muralhaInfo.csv muralhaInfo
+.import oficinaInfo.csv oficinaInfo
+.import padariaInfo.csv padariaInfo
+.import palacioInfo.csv palacioInfo
+.import palicadaInfo.csv palicadaInfo
+.import pedreiroInfo.csv pedreiroInfo
+.import pontoReuniaoMilitarInfo.csv pontoReuniaoMilitarInfo
+.import pracaTorneiosInfo.csv pracaTorneiosInfo
+.import quartelInfo.csv quartelInfo
+.import residenciaInfo.csv residenciaInfo
+.import serracaoInfo.csv serracaoInfo
+.import tesourariaInfo.csv tesourariaInfo
+
+
+create table muralhaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table moinhoInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table cerealInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table embaixadaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, capacidade integer);
+create table esconderijoInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table fabricaArmadurasInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table ferreiroInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table ferroInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table fundicaoInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table grandeCavalaricaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table grandeQuartelInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table maravilhaMundoInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table oficinaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table palacioInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table palicadaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table padariaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table pedreiroInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table pontoReuniaoMilitarInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table quartelInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table residenciaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table serracaoInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+create table tesourariaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);

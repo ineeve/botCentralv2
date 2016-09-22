@@ -7,8 +7,20 @@ fabricaArmadilhas - capacidade
 companhiaComercio - capacidade
 pedreiro - resistencia
 mansaoHeroi - numeroDeOasis
-praçaTorneiros - velocidade
+praçaTorneios - velocidade
 edificio principal - velocidade
 mercado - mercadores
 cervejaria - bonusAtaque
 
+create table armazemInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, capacidade integer);
+create table celeiroInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, capacidade integer);
+create table grandeArmazemInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, capacidade integer);
+create table grandeCeleiroInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, capacidade integer);
+create table fabricaArmadilhasInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, capacidade integer);
+create table companhiaComercioInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, capacidade integer);
+create table pedreiroInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, resistencia real);
+create table mansaoHeroiInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, numeroOasis integer);
+create table pracaTorneiosInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, velocidade real);
+create table edificioPrincipalInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, velocidade real);
+create table mercadoInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, numeroMercadores integer);
+create table cervejariaInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer, bonusAtaque real);
