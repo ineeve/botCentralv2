@@ -10,9 +10,14 @@ $pass = "123456789"
 
 _SQLite_Startup()
 ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
-Local $hDskDb = _SQLite_Open("C:\Users\roony\Documents\GitHub\botCentral\travian.db")
-Local $out
-_SQLite_SQLiteExe("C:\Users\roony\Documents\GitHub\botCentral\travian.db",".read map.sql",$out)
+Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
+Local $hQuery, $aRow, $sMsg
+_SQLite_Query ( -1, "Select f,pop From x_world Where a=3199;", $hQuery )
+MsgBox(0, 0, $hQuery)
+While _SQLite_FetchData($hQuery, $aRow) = $SQLITE_OK
+    $sMsg &= $aRow[0]
+	MsgBox(0, 0, $sMsg)
+WEnd
 
 _SQLite_Close()
 _SQLite_Shutdown()
