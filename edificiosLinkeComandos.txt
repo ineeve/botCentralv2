@@ -1,0 +1,6 @@
+https://travian.kirilloid.ru/build.php#mb=1&s=1.44
+
+
+create table quartelInfo (lvl integer, madeiraNecessaria integer, barroNecessario integer,ferroNecessario integer,cerealNecessario integer,totalNecessario integer,cerealConsumido integer);
+.separator ";"
+.import quartelTable.csv quartelInfo

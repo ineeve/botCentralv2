@@ -1,0 +1,14 @@
+special ones:
+armazem -capacidade
+celeiro - capacidade
+grande armazem - capacidade
+grande celeiro - capacidade
+fabricaArmadilhas - capacidade
+companhiaComercio - capacidade
+pedreiro - resistencia
+mansaoHeroi - numeroDeOasis
+praçaTorneiros - velocidade
+edificio principal - velocidade
+mercado - mercadores
+cervejaria - bonusAtaque
+
