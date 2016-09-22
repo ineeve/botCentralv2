@@ -7,7 +7,7 @@
 
 $username = "BotCentral000"
 $pass = "123456789"
-
+#comments-start
 _SQLite_Startup()
 ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
 Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
@@ -21,8 +21,8 @@ WEnd
 
 _SQLite_Close()
 _SQLite_Shutdown()
-#comments-start
-_FFStart(Default,Default,Default,True)
+#comments-end
+_FFStart(Default,Default,Default,False)
 Global $hFF = _FFConnect();connects to MozRepl in Firefox Browser
 
 Func login()
@@ -349,6 +349,3 @@ login()
 goOnAdventure()
 buildBuilding("quartel")
 getMissionRewards()
-
-
-#comments-end
