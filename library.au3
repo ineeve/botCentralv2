@@ -5,8 +5,6 @@
 #include <SQLite.au3>
 #include <SQLite.dll.au3>
 
-$username = "BotCentral000"
-$pass = "123456789"
 #comments-start
 _SQLite_Startup()
 ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
@@ -22,11 +20,12 @@ WEnd
 _SQLite_Close()
 _SQLite_Shutdown()
 #comments-end
-_FFStart(Default,Default,Default,False)
-Global $hFF = _FFConnect();connects to MozRepl in Firefox Browser
 
-Func login()
-	_FFOPenURL("http://tx3.travian.pt/")
+
+Func login($username, $pass, $serverURL)
+   _FFStart(Default,Default,Default,False)
+   Global $hFF = _FFConnect();connects to MozRepl in Firefox Browser
+	_FFOPenURL($serverURL)
 _FFSetValue($pass,_FFObjGet("password","name"))
 _FFSetValue($username,_FFObjGet("name","name"))
 _FFClick("s1","id")
@@ -39,7 +38,7 @@ Func getCValue()
    return $cValue
 EndFunc
 Func getResourcesId(); deprecated, valve, please fix
-   _FFOpenURL("/dorf1.php")
+   smartURL("/dorf1.php")
    Local $resourcesArray[20]
    For $i = 0 To 17
    $resourcesArray[$i] = _FFCMD(".getElementsByTagName('Area')["&$i&"].alt.substring(0,1)")
@@ -47,7 +46,7 @@ Next
 return $resourcesArray
    EndFunc
 Func getIdOfTheLowestLevelField($fieldName)
-	_FFOpenURL("/dorf1.php")
+   smartURL("/dorf1.php")
    $resourcesArray = getResourcesId()
    Local $levelArray[10]
    $idOfTheLowestLevelField = -1
@@ -77,7 +76,7 @@ func upgradeField($fieldName, $optionalId =-1 )
 EndFunc
 Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1)
    $cValue = getCValue()
-   _FFOpenURL("/dorf2.php")
+   smartURL("/dorf2.php")
    if ($aValue == -1 And $buildingId == -1) Then
 	  switch $buildingName
 	  case "armazem"
@@ -165,7 +164,7 @@ Func upgradeBuilding($aValue)
    _FFOpenURL($url)
 EndFunc
 Func getBuildingLvl($buildingName,$buildingId = -1)
-   _FFOpenURL("/dorf2.php")
+   smartURL("/dorf2.php")
    if $buildingId == -1 Then
 	  switch $buildingName
 	  case "armazem"
@@ -226,14 +225,17 @@ Func getBuildingLvl($buildingName,$buildingId = -1)
    EndFunc
 
 Func getTutReward()
-   _FFOpenURL("/dorf1.php")
+   smartURL("/dorf1.php")
    sleep(1000)
    _FFCmd(".getElementById('questmasterButton').click()")
    sleep(1000)
    _FFCMD(".getElementsByClassName('green questButtonNext')[0].click()")
 EndFunc
 Func goOnAdventure()
-   _FFOpenURL("/hero_adventure.php")
+   if _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> "/hero_adventure.php" Then
+	  _FFOpenURL("/hero_adventure.php")
+   EndIf
+
    sleep(1000)
    $adventureURL = _FFCmd(".getElementsByClassName('gotoAdventure arrow')[1].href")
    _FFOpenURL($adventureURL)
@@ -243,43 +245,74 @@ Func doTutorial()
 
    ;fazer missoes do tutorial
    ;missão1
-   _FFOpenURL("/dorf1.php")
+   sleep(500)
+   If _FFCmd(".getElementsByClassName('green questButtonNext highlighted on').length") == 0 Then
+	  Return
+   EndIf
+   _FFCmd(".getElementsByClassName('green questButtonNext highlighted on').click()")
+
+   sleep(2000)
+
    _FFCmd(".getElementById('questmasterButton').click()")
+   sleep(3000)
    _FFCmd(".getElementById('dialogCancelButton').click()")
+   sleep(3000)
    _FFCmd(".getElementById('questmasterButton').click()")
+   sleep(3000)
    _FFCmd(".getElementById('questTutorialLightBulb').click()")
-   _FFCMD(".getElementsByClassName('green questButtonNext')[0].click()")
-   getTutReward()
-   ;evoluir bosque para nivel2
+   sleep(3000)
+   _FFCmd(".getElementsByClassName('green questButtonNext')[0].click()")
+   sleep(3000)
+
+   ;evoluir bosque para nivel1
+   _FFOpenURL("/build.php?id=1")
    upgradeField("B",1)
    ;obter recompensa
+   sleep(500)
+   getTutReward() ; termina de imediato
+   sleep(500)
+
+   ;evoluir bosque para nivel 2
+   _FFOpenURL("/build.php?id=1")
+   upgradeField("B",1)
+   sleep(500)
    getTutReward()
+   sleep(500)
    ;missao evoluir campo de cereais para nivel 1
+   _FFOpenURL("/build.php?id=2"); para o tutorial detetar que o campo foi aberto
    upgradeField("C")
-   _FFOpenURL("/build.php?id=2") ; para o tutorial detetar que o campo foi aberto
+
+   sleep(500)
    getTutReward()
 
    ;missao alterar producao do heroi para barro
-   _FFCmd(".getElementById('heroImageButton').click()")
-   sleep(1000)
-   _FFCmd(".getElementById('resourceHero2').click()")
-   _FFCmd(".getElementById('saveHeroAttributes').click()") ; salvar atributos
-   sleep(500)
+   balanceResources(1)
+
    getTutReward()
 
 
    ;missao entrar na aldeia e construir armazem
    buildBuilding("armazem")
+   sleep(1000)
+
    getTutReward()
    ;missao construir ponto de reuniao militar
    _FFOpenURL("/build.php?id=39") ; Para garantir que o travian deteta que abri o ponto de reu.militar
+   sleep(1000)
    buildBuilding("prm") ; Construir Ponto de Reunião Militar
+   sleep(1000)
    getTutReward()
+   sleep(1000)
+
+
 
    ; missao terminar de imediato
+   smartURL("/dorf2.php")
+   sleep(1000)
    _FFCmd(".getElementsByClassName('gold highlighted on')[0].click()")
-   sleep(50)
+   sleep(1000)
    _FFCmd(".getElementsByClassName('gold highlighted on')[0].click()")
+   sleep(1000)
    getTutReward()
 
 
@@ -288,6 +321,7 @@ Func doTutorial()
    $adventureURL = _FFCmd(".getElementsByClassName('gotoAdventure arrow highlighted on')[1].href")
    _FFOpenURL($adventureURL)
    _FFCmd(".getElementById('start').click()")
+   sleep(1000)
    getTutReward()
 
 
@@ -296,33 +330,42 @@ Func doTutorial()
    sleep(1000)
    $reportURL = _FFCmd(".getElementsByClassName('adventure')[0].href")
    _FFOpenURL($reportURL)
+   sleep(1000)
    getTutReward()
 
 
    _FFOpenURL("/hero_inventory.php")
-   sleep(500)
-   _FFCmd(".getElementById('item_121124').click()") ; clica na poçao de cura
+   sleep(1000)
+   _FFCmd(".getElementsByClassName('item male_item_106 highlighted on')[0].click()"); clica na poçao de cura
+   sleep(1000)
    _FFCmd(".getElementsByClassName('green ok dialogButtonOk')[0].click()")
+   sleep(1000)
    getTutReward()
+   sleep(2000)
 
    ;missao de ver interface do travian
    _FFCmd(".getElementsByClassName('layoutButton bulbWhite green  highlighted on')[0].click()")
-   sleep(100)
+   sleep(1000)
    _FFCmd(".getElementsByClassName('overlayCloseLink')[0].click()") ; fechar a ajuda
+   sleep(1000)
+
+   getTutReward()
 
    ;evoluir armazem porque os recursos devem estar cheios neste momento
-   upgradeBuilding(19)
+   ;upgradeBuilding(19)
 
    ;construir celeiro
+   sleep(1000)
    buildBuilding("celeiro")
+   sleep(1000)
    getTutReward()
    ;acabar tutorial
+   sleep(1000)
    getTutReward()
 
 EndFunc
 Func getMissionRewards()
 	Local $availableReward[10]
-	_FFOpenURL("/dorf1.php")
 	sleep(1000)
 	For $i = 0 To 5
 		If _FFCmd(".getElementsByClassName('quest')[" & $i & "].getElementsByClassName('reward')[0].classList.contains('reward')") == "1" Then
@@ -336,16 +379,76 @@ Func getMissionRewards()
 EndFunc
 Func getResourcesQuantity()
 	; madeira barro ferro cereal, armazem, celeiro, cerealLivre
-	Local $recursos[6]
+	Local $recursos[7]
 	For $i = 0 To 3
 		$recursos[$i] = _FFCmd(".getElementById(""stockBarResource"&String($i+1)&""").getElementsByTagName(""span"")[0].innerHTML.replace(/\./,'')")
 	Next
-	recursos[4] = _FFCmd(".getElementById('stockBarWarehouse').innerHTML.replace(/\./,'')")
-	recursos[5] = _FFCmd(".getElementById('stockBarGranary').innerHTML.replace(/\./,'')")
-	recursos[6] = _FFCmd(".getElementById('stockBarFreeCrop').innerHTML.replace(/\./,'')")
+	$recursos[4] = _FFCmd(".getElementById('stockBarWarehouse').innerHTML.replace(/\./,'')")
+	$recursos[5] = _FFCmd(".getElementById('stockBarGranary').innerHTML.replace(/\./,'')")
+	$recursos[6] = _FFCmd(".getElementById('stockBarFreeCrop').innerHTML.replace(/\./,'')")
 	return $recursos
+ EndFunc
+Func balanceResources($recurso = -1)
+   $recursos = getResourcesQuantity()
+	$indexMin = -1;
+	$minValue = 9999999
+   If $recurso <> -1 Then
+	  $indexMin = $recurso
+	  Else
+	For $i = 0 To 2
+	   If $recursos[$i] < $minValue Then
+		  $minValue = $recursos[$i]
+		  $indexMin = $i
+	   EndIf
+	Next
+	If(0.75 * $minValue > $recursos[3]) Then
+	   $indexMin = 3
+	   $minValue = $recursos[3]
+	EndIf
+ EndIf
+
+	_FFOpenURL("/hero_inventory.php")
+	_FFCmd(".getElementById('resourceHero"&$indexMin+1&"').click()")
+	_FFCmd(".getElementById('saveHeroAttributes').click()")
 EndFunc
-login()
-goOnAdventure()
-buildBuilding("quartel")
-getMissionRewards()
+Func createTraps()
+   _FFOpenURL("/build.php?id=23")
+   _FFCmd(".getElementsByName('t99')[0].value = 1000")
+   _FFCmd(".getElementById('s1').click()")
+EndFunc
+Func sendTroops($xCoord,$yCoord,$tipoAtaque = 2,$falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0)
+   _FFOpenURL("/build.php?tt=2&id=39")
+   $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
+   $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
+   $batedor == -1 ? _FFCmd(".getElementsByName('t3')[0].value = 9999999") : _FFCmd(".getElementsByName('t3')[0].value = " & $batedor)
+   $trovao == -1 ? _FFCmd(".getElementsByName('t4')[0].value = 9999999") : _FFCmd(".getElementsByName('t4')[0].value = " & $trovao)
+   $druida == -1 ? _FFCmd(".getElementsByName('t5')[0].value = 9999999") : _FFCmd(".getElementsByName('t5')[0].value = " & $druida)
+   $haeudano == -1 ? _FFCmd(".getElementsByName('t6')[0].value = 9999999") : _FFCmd(".getElementsByName('t6')[0].value = " & $haeudano)
+   $ariete == -1 ? _FFCmd(".getElementsByName('t7')[0].value = 9999999") : _FFCmd(".getElementsByName('t7')[0].value = " & $ariete)
+   $trabuquete == -1 ? _FFCmd(".getElementsByName('t8')[0].value = 9999999") : _FFCmd(".getElementsByName('t8')[0].value = " & $trabuquete)
+   $chefe == -1 ? _FFCmd(".getElementsByName('t9')[0].value = 9999999") : _FFCmd(".getElementsByName('t9')[0].value = " & $chefe)
+   $colonizador == -1 ? _FFCmd(".getElementsByName('t10')[0].value = 9999999") : _FFCmd(".getElementsByName('t10')[0].value = " & $colonizador)
+   _FFCmd(".getElementById('xCoordInput').value = " & $xCoord)
+   _FFCmd(".getElementById('yCoordInput').value = " & $yCoord)
+   _FFCmd(".getElementsByName('c')["& $tipoAtaque &"].click()")
+   _FFCmd(".getElementById('btn_ok').click()")
+EndFunc
+Func trainTroops($falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0)
+   _FFOpenURL("/build.php?id=29")
+   $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
+   $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
+   $batedor == -1 ? _FFCmd(".getElementsByName('t3')[0].value = 9999999") : _FFCmd(".getElementsByName('t3')[0].value = " & $batedor)
+   $trovao == -1 ? _FFCmd(".getElementsByName('t4')[0].value = 9999999") : _FFCmd(".getElementsByName('t4')[0].value = " & $trovao)
+   $druida == -1 ? _FFCmd(".getElementsByName('t5')[0].value = 9999999") : _FFCmd(".getElementsByName('t5')[0].value = " & $druida)
+   $haeudano == -1 ? _FFCmd(".getElementsByName('t6')[0].value = 9999999") : _FFCmd(".getElementsByName('t6')[0].value = " & $haeudano)
+   $ariete == -1 ? _FFCmd(".getElementsByName('t7')[0].value = 9999999") : _FFCmd(".getElementsByName('t7')[0].value = " & $ariete)
+   $trabuquete == -1 ? _FFCmd(".getElementsByName('t8')[0].value = 9999999") : _FFCmd(".getElementsByName('t8')[0].value = " & $trabuquete)
+   $chefe == -1 ? _FFCmd(".getElementsByName('t9')[0].value = 9999999") : _FFCmd(".getElementsByName('t9')[0].value = " & $chefe)
+   $colonizador == -1 ? _FFCmd(".getElementsByName('t10')[0].value = 9999999") : _FFCmd(".getElementsByName('t10')[0].value = " & $colonizador)
+   _FFCmd(".getElementById('s1').click()")
+   EndFunc
+Func smartURL($URL)
+   if _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> $URL Then
+	  _FFOpenURL($URL)
+   EndIf
+   EndFunc
