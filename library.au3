@@ -1,3 +1,4 @@
+#include-once
 #include <FF.au3>
 #include <MsgBoxConstants.au3>
 #include <array.au3>
@@ -217,7 +218,7 @@ Func getBuildingLvl($buildingName,$buildingId = -1)
 		 $buildingId =21
 	  EndSwitch
    Else
-	  $buildingId = buildingId - 19
+	  $buildingId = $buildingId - 19
    EndIf
    $lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt.match(/\d+/)[0]")
    MsgBox(0,0,"nível ="&$lvlOfCurrentId)
@@ -418,33 +419,33 @@ Func createTraps()
 EndFunc
 Func sendTroops($xCoord,$yCoord,$tipoAtaque = 2,$falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0)
    _FFOpenURL("/build.php?tt=2&id=39")
-   $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
-   $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
-   $batedor == -1 ? _FFCmd(".getElementsByName('t3')[0].value = 9999999") : _FFCmd(".getElementsByName('t3')[0].value = " & $batedor)
-   $trovao == -1 ? _FFCmd(".getElementsByName('t4')[0].value = 9999999") : _FFCmd(".getElementsByName('t4')[0].value = " & $trovao)
-   $druida == -1 ? _FFCmd(".getElementsByName('t5')[0].value = 9999999") : _FFCmd(".getElementsByName('t5')[0].value = " & $druida)
-   $haeudano == -1 ? _FFCmd(".getElementsByName('t6')[0].value = 9999999") : _FFCmd(".getElementsByName('t6')[0].value = " & $haeudano)
-   $ariete == -1 ? _FFCmd(".getElementsByName('t7')[0].value = 9999999") : _FFCmd(".getElementsByName('t7')[0].value = " & $ariete)
-   $trabuquete == -1 ? _FFCmd(".getElementsByName('t8')[0].value = 9999999") : _FFCmd(".getElementsByName('t8')[0].value = " & $trabuquete)
-   $chefe == -1 ? _FFCmd(".getElementsByName('t9')[0].value = 9999999") : _FFCmd(".getElementsByName('t9')[0].value = " & $chefe)
-   $colonizador == -1 ? _FFCmd(".getElementsByName('t10')[0].value = 9999999") : _FFCmd(".getElementsByName('t10')[0].value = " & $colonizador)
-   _FFCmd(".getElementById('xCoordInput').value = " & $xCoord)
-   _FFCmd(".getElementById('yCoordInput').value = " & $yCoord)
-   _FFCmd(".getElementsByName('c')["& $tipoAtaque &"].click()")
-   _FFCmd(".getElementById('btn_ok').click()")
+   $a = $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
+   $a = $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
+   $a = $batedor == -1 ? _FFCmd(".getElementsByName('t3')[0].value = 9999999") : _FFCmd(".getElementsByName('t3')[0].value = " & $batedor)
+   $a = $trovao == -1 ? _FFCmd(".getElementsByName('t4')[0].value = 9999999") : _FFCmd(".getElementsByName('t4')[0].value = " & $trovao)
+   $a = $druida == -1 ? _FFCmd(".getElementsByName('t5')[0].value = 9999999") : _FFCmd(".getElementsByName('t5')[0].value = " & $druida)
+   $a = $haeudano == -1 ? _FFCmd(".getElementsByName('t6')[0].value = 9999999") : _FFCmd(".getElementsByName('t6')[0].value = " & $haeudano)
+   $a = $ariete == -1 ? _FFCmd(".getElementsByName('t7')[0].value = 9999999") : _FFCmd(".getElementsByName('t7')[0].value = " & $ariete)
+   $a = $trabuquete == -1 ? _FFCmd(".getElementsByName('t8')[0].value = 9999999") : _FFCmd(".getElementsByName('t8')[0].value = " & $trabuquete)
+   $a = $chefe == -1 ? _FFCmd(".getElementsByName('t9')[0].value = 9999999") : _FFCmd(".getElementsByName('t9')[0].value = " & $chefe)
+   $a = $colonizador == -1 ? _FFCmd(".getElementsByName('t10')[0].value = 9999999") : _FFCmd(".getElementsByName('t10')[0].value = " & $colonizador)
+   $a = _FFCmd(".getElementById('xCoordInput').value = " & $xCoord)
+   $a = _FFCmd(".getElementById('yCoordInput').value = " & $yCoord)
+   $a = _FFCmd(".getElementsByName('c')["& $tipoAtaque &"].click()")
+   $a = _FFCmd(".getElementById('btn_ok').click()")
 EndFunc
 Func trainTroops($falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0)
    _FFOpenURL("/build.php?id=29")
-   $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
-   $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
-   $batedor == -1 ? _FFCmd(".getElementsByName('t3')[0].value = 9999999") : _FFCmd(".getElementsByName('t3')[0].value = " & $batedor)
-   $trovao == -1 ? _FFCmd(".getElementsByName('t4')[0].value = 9999999") : _FFCmd(".getElementsByName('t4')[0].value = " & $trovao)
-   $druida == -1 ? _FFCmd(".getElementsByName('t5')[0].value = 9999999") : _FFCmd(".getElementsByName('t5')[0].value = " & $druida)
-   $haeudano == -1 ? _FFCmd(".getElementsByName('t6')[0].value = 9999999") : _FFCmd(".getElementsByName('t6')[0].value = " & $haeudano)
-   $ariete == -1 ? _FFCmd(".getElementsByName('t7')[0].value = 9999999") : _FFCmd(".getElementsByName('t7')[0].value = " & $ariete)
-   $trabuquete == -1 ? _FFCmd(".getElementsByName('t8')[0].value = 9999999") : _FFCmd(".getElementsByName('t8')[0].value = " & $trabuquete)
-   $chefe == -1 ? _FFCmd(".getElementsByName('t9')[0].value = 9999999") : _FFCmd(".getElementsByName('t9')[0].value = " & $chefe)
-   $colonizador == -1 ? _FFCmd(".getElementsByName('t10')[0].value = 9999999") : _FFCmd(".getElementsByName('t10')[0].value = " & $colonizador)
+   $a = $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
+   $a = $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
+   $a = $batedor == -1 ? _FFCmd(".getElementsByName('t3')[0].value = 9999999") : _FFCmd(".getElementsByName('t3')[0].value = " & $batedor)
+   $a = $trovao == -1 ? _FFCmd(".getElementsByName('t4')[0].value = 9999999") : _FFCmd(".getElementsByName('t4')[0].value = " & $trovao)
+   $a = $druida == -1 ? _FFCmd(".getElementsByName('t5')[0].value = 9999999") : _FFCmd(".getElementsByName('t5')[0].value = " & $druida)
+   $a = $haeudano == -1 ? _FFCmd(".getElementsByName('t6')[0].value = 9999999") : _FFCmd(".getElementsByName('t6')[0].value = " & $haeudano)
+   $a = $ariete == -1 ? _FFCmd(".getElementsByName('t7')[0].value = 9999999") : _FFCmd(".getElementsByName('t7')[0].value = " & $ariete)
+   $a = $trabuquete == -1 ? _FFCmd(".getElementsByName('t8')[0].value = 9999999") : _FFCmd(".getElementsByName('t8')[0].value = " & $trabuquete)
+   $a = $chefe == -1 ? _FFCmd(".getElementsByName('t9')[0].value = 9999999") : _FFCmd(".getElementsByName('t9')[0].value = " & $chefe)
+   $a = $colonizador == -1 ? _FFCmd(".getElementsByName('t10')[0].value = 9999999") : _FFCmd(".getElementsByName('t10')[0].value = " & $colonizador)
    _FFCmd(".getElementById('s1').click()")
    EndFunc
 Func smartURL($URL)
