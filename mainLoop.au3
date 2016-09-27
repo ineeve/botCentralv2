@@ -24,7 +24,7 @@ Switch($guiMsg)
 		Local $funcName = $funcParams[0]
 		$funcParams[0] = "CallArgArray"
 		For $i=1 To Ubound($funcParams)-1
-			$funcParams[$i] = Number($funcParams[$i])
+			$funcParams[$i] = $funcParams[$i]
 		Next
 		MsgBox(0,"", $funcParams[1])
 		Call($funcName, $funcParams)
