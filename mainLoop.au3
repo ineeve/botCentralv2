@@ -13,7 +13,7 @@ While(1)
 $guiMsg = GUIGetMsg()
 Switch($guiMsg)
 	Case $loginButton
-		login(GuiCtrlread($loginButton), GUICtrlRead($password), GUICtrlRead($serverURL))
+		login(GuiCtrlread($username), GUICtrlRead($password), GUICtrlRead($serverURL))
 	Case $GUI_EVENT_CLOSE
 		ExitLoop
 		EndSwitch
