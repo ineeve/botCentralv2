@@ -15,7 +15,8 @@ GUISetState(@SW_SHOW)
 
 
 While(1)
-$guiMsg = GUIGetMsg()
+$guiMsg = GUIGetMsg();updates gui state, incorporates a delay
+#Region GUI
 Switch($guiMsg)
 	Case $loginButton
 		login(GuiCtrlread($userName), GUICtrlRead($password), GUICtrlRead($serverURL))
@@ -23,5 +24,7 @@ Switch($guiMsg)
 		ExitLoop
 	Case $funcButton
 		callFunc(StringSplit(GUICtrlRead($funcInput), ",", 2)); don't worry, it works
-		EndSwitch
-	WEnd
+EndSwitch
+#EndRegion
+
+WEnd

@@ -462,4 +462,7 @@ Func callFunc($funcParams); gui command caller
 		Next
 		MsgBox(0,"", $funcParams[1])
 		Call($funcName, $funcParams)
-		EndFunc
+EndFunc
+Func thinkV01();thiks like a stupid kid but more often
+
+	EndFunc
