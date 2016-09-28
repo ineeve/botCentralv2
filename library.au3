@@ -23,7 +23,7 @@ _SQLite_Shutdown()
 #comments-end
 
 
-Func login($username, $pass, $serverURL)
+Func login($username, $pass, $serverURL);review because of GUI, maybe create a start function that starts firefox and then login after
    _FFStart(Default,Default,Default,False)
    Global $hFF = _FFConnect();connects to MozRepl in Firefox Browser
 	_FFOPenURL($serverURL)
@@ -31,7 +31,7 @@ _FFSetValue($pass,_FFObjGet("password","name"))
 _FFSetValue($username,_FFObjGet("name","name"))
 _FFClick("s1","id")
 EndFunc
-Func getCValue()
+Func getCValue();returns a magic value used to do fundamental things
    $getCURL = "/build.php?id=1"
    _FFOpenURL($getCURL)
    If _FFCmd(".getElementsByClassName('green build')[0].className") == "green build disabled" Then
@@ -48,7 +48,7 @@ Func getResourcesId(); deprecated, valve, please fix
 Next
 return $resourcesArray
    EndFunc
-Func getIdOfTheLowestLevelField($fieldName)
+Func getIdOfTheLowestLevelField($fieldName);returns the id of the lowest field level (of that specific type)
    smartURL("/dorf1.php")
    $resourcesArray = getResourcesId()
    Local $levelArray[10]
@@ -66,7 +66,7 @@ Func getIdOfTheLowestLevelField($fieldName)
    Next
    return $idOfTheLowestLevelField
 EndFunc
-func upgradeField($fieldName, $optionalId =-1 )
+func upgradeField($fieldName, $optionalId =-1 );upgrades field, default is lowest level of that type
    Local  $idOfTheLowestLevelField
    if ($optionalId == -1) Then
 	  $idOfTheLowestLevelField = getIdOfTheLowestLevelField($fieldName)
@@ -77,7 +77,7 @@ func upgradeField($fieldName, $optionalId =-1 )
    $url = "/dorf1.php?a="&$idOfTheLowestLevelField&"&c="&$cValue
    _FFOpenURL($url)
 EndFunc
-Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1)
+Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1);builds a non existing building on the village
    $cValue = getCValue()
    smartURL("/dorf2.php")
    if ($aValue == -1 And $buildingId == -1) Then
@@ -161,12 +161,12 @@ Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1)
    sleep(500)
    _FFOpenURL($url)
 EndFunc
-Func upgradeBuilding($aValue)
+Func upgradeBuilding($aValue);upgrades building from a value
    $cValue = getCValue()
    $url = "/dorf2.php?a="&$aValue&"&c="&$cValue
    _FFOpenURL($url)
 EndFunc
-Func getBuildingLvl($buildingName,$buildingId = -1)
+Func getBuildingLvl($buildingName,$buildingId = -1);returns building level
    smartURL("/dorf2.php")
    if $buildingId == -1 Then
 	  switch $buildingName
@@ -223,17 +223,17 @@ Func getBuildingLvl($buildingName,$buildingId = -1)
 	  $buildingId = $buildingId - 19
    EndIf
    $lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt.match(/\d+/)[0]")
-   MsgBox(0,0,"nível ="&$lvlOfCurrentId)
-
+   ;MsgBox(0,0,"nível ="&$lvlOfCurrentId)
+   return $lvlOfCurrentId
    EndFunc
-Func getTutReward()
+Func getTutReward();please review me
    smartURL("/dorf1.php")
    sleep(1000)
    _FFCmd(".getElementById('questmasterButton').click()")
    sleep(1000)
    _FFCMD(".getElementsByClassName('green questButtonNext')[0].click()")
 EndFunc
-Func goOnAdventure()
+Func goOnAdventure();takes the hero to adventure
    if _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> "/hero_adventure.php" Then
 	  _FFOpenURL("/hero_adventure.php")
    EndIf
@@ -243,7 +243,7 @@ Func goOnAdventure()
    _FFOpenURL($adventureURL)
    _FFCmd(".getElementById('start').click()")
 EndFunc
-Func doTutorial()
+Func doTutorial();please fix this crap
 
    ;fazer missoes do tutorial
    ;missão1
@@ -366,7 +366,7 @@ Func doTutorial()
    getTutReward()
 
 EndFunc
-Func getMissionRewards()
+Func getMissionRewards();gets mission rewards, code needs cleanup for noerror of firefox
 	Local $availableReward[10]
 	sleep(1000)
 	For $i = 0 To 5
@@ -379,7 +379,7 @@ Func getMissionRewards()
 			EndIf
 		Next
 EndFunc
-Func getResourcesQuantity()
+Func getResourcesQuantity();returns array of resources
 	; madeira barro ferro cereal, armazem, celeiro, cerealLivre
 	Local $recursos[7]
 	For $i = 0 To 3
@@ -390,7 +390,7 @@ Func getResourcesQuantity()
 	$recursos[6] = _FFCmd(".getElementById('stockBarFreeCrop').innerHTML.replace(/\./,'')")
 	return $recursos
  EndFunc
-Func balanceResources($recurso = -1)
+Func balanceResources($recurso = -1);hero resource balance
    $recursos = getResourcesQuantity()
 	$indexMin = -1;
 	$minValue = 9999999
@@ -413,12 +413,12 @@ Func balanceResources($recurso = -1)
 	_FFCmd(".getElementById('resourceHero"&$indexMin+1&"').click()")
 	_FFCmd(".getElementById('saveHeroAttributes').click()")
 EndFunc
-Func createTraps()
+Func createTraps($quantidade= 1000);builds $quantidade of traps, default is max;
    _FFOpenURL("/build.php?id=23")
-   _FFCmd(".getElementsByName('t99')[0].value = 1000")
+   _FFCmd(".getElementsByName('t99')[0].value = " & $quantidade)
    _FFCmd(".getElementById('s1').click()")
 EndFunc
-Func sendTroops($xCoord,$yCoord,$tipoAtaque = 2,$falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0)
+Func sendTroops($xCoord,$yCoord,$tipoAtaque = 2,$falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0);send troos
    _FFOpenURL("/build.php?tt=2&id=39")
    $a = $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
    $a = $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
@@ -435,7 +435,7 @@ Func sendTroops($xCoord,$yCoord,$tipoAtaque = 2,$falange = 0, $espadachim = 0, $
    $a = _FFCmd(".getElementsByName('c')["& $tipoAtaque &"].click()")
    $a = _FFCmd(".getElementById('btn_ok').click()")
 EndFunc
-Func trainTroops($falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0)
+Func trainTroops($falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $druida = 0, $haeudano = 0, $ariete = 0, $trabuquete = 0, $chefe = 0, $colonizador = 0);make troops
    _FFOpenURL("/build.php?id=29")
    $a = $falange == -1 ? _FFCmd(".getElementsByName('t1')[0].value = 9999999") : _FFCmd(".getElementsByName('t1')[0].value = " & $falange)
    $a = $espadachim == -1 ? _FFCmd(".getElementsByName('t2')[0].value = 9999999") : _FFCmd(".getElementsByName('t2')[0].value = " & $espadachim)
@@ -449,8 +449,17 @@ Func trainTroops($falange = 0, $espadachim = 0, $batedor = 0, $trovao = 0, $drui
    $a = $colonizador == -1 ? _FFCmd(".getElementsByName('t10')[0].value = 9999999") : _FFCmd(".getElementsByName('t10')[0].value = " & $colonizador)
    _FFCmd(".getElementById('s1').click()")
    EndFunc
-Func smartURL($URL)
+Func smartURL($URL);url browsing optimization
    if _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> $URL Then
 	  _FFOpenURL($URL)
    EndIf
-   EndFunc
+EndFunc
+Func callFunc($funcParams); gui command caller
+		Local $funcName = $funcParams[0]
+		$funcParams[0] = "CallArgArray"
+		For $i=1 To Ubound($funcParams)-1
+			$funcParams[$i] = $funcParams[$i]
+		Next
+		MsgBox(0,"", $funcParams[1])
+		Call($funcName, $funcParams)
+		EndFunc
