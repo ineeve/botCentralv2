@@ -34,9 +34,11 @@ EndFunc
 Func getCValue()
    $getCURL = "/build.php?id=1"
    _FFOpenURL($getCURL)
-   $cValue = _FFCmd(".getElementsByClassName('green build')[0].getAttribute('onclick').substring(40,46);")
-   ;MsgBox(0,"",$cValue)
-   return $cValue
+   If _FFCmd(".getElementsByClassName('green build')[0].className") == "green build disabled" Then
+	   return _FFCmd(".getElementsByClassName('gold builder')[0].getAttribute('onclick').substring(40,46)")
+   Else
+	   return _FFCmd(".getElementsByClassName('green build')[0].getAttribute('onclick').substring(40,46);")
+   EndIf
 EndFunc
 Func getResourcesId(); deprecated, valve, please fix
    smartURL("/dorf1.php")
@@ -224,7 +226,6 @@ Func getBuildingLvl($buildingName,$buildingId = -1)
    MsgBox(0,0,"nível ="&$lvlOfCurrentId)
 
    EndFunc
-
 Func getTutReward()
    smartURL("/dorf1.php")
    sleep(1000)
