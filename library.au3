@@ -40,7 +40,7 @@ Func getCValue()
 	   return _FFCmd(".getElementsByClassName('green build')[0].getAttribute('onclick').substring(40,46);")
    EndIf
 EndFunc
-Func getResourcesId(); deprecated, valve, please fix
+Func getResourcesId();
    smartURL("/dorf1.php")
    Local $resourcesArray[20]
    For $i = 0 To 17
@@ -51,10 +51,8 @@ return $resourcesArray
 Func getIdOfTheLowestLevelField($fieldName)
    smartURL("/dorf1.php")
    $resourcesArray = getResourcesId()
-   Local $levelArray[10]
    $idOfTheLowestLevelField = -1
    $lowestLevel = 255
-   $j = 0
    For $i = 0 To 17
 	  if $fieldName == $resourcesArray[$i] Then
 		$lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$i&"].alt.match(/\d+/)[0]")
@@ -214,7 +212,7 @@ Func getBuildingLvl($buildingName,$buildingId = -1)
 		 $buildingId = 18
 	  case "grandeArmazem"
 		 $buildingId = 19
-	  case "prm"
+	  case "pontoReuniaoMilitar"
 		 $buildingId = 20
 	  case "palicada"
 		 $buildingId =21
@@ -453,4 +451,57 @@ Func smartURL($URL)
    if _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> $URL Then
 	  _FFOpenURL($URL)
    EndIf
+EndFunc
+Func checkIfThereAreEnoughResources($buildOrFieldName)
+   Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
+   $currentLvl = getCurrentLvl($buildOrFieldName)
+   Local $hQuery,$hQuery1, $aRow,$aRow1, $madeiraNecessaria,$barroNecessario,$ferroNecessario,$cerealNecessario, $idOfLowestLvlField, $tableName, $haveEnoughResources
+   _SQLite_Query ( -1, "Select tableName From buildingNamesVSTableNames Where buildingName = '"&$buildOrFieldName&"'", $hQuery )
+   While _SQLite_FetchData($hQuery, $aRow) = $SQLITE_OK
+	  $tableName = $aRow[0]
+   WEnd
+   _SQLite_Query ( -1, "Select madeiraNecessaria,barroNecessario,ferroNecessario,cerealNecessario From'"&$tableName&"' Where lvl ='"&$currentLvl+1&"'", $hQuery1 )
+   While _SQLite_FetchData($hQuery1, $aRow1) = $SQLITE_OK
+	  $madeiraNecessaria = $aRow1[0]
+	  $barroNecessario = $aRow1[1]
+	  $ferroNecessario = $aRow1[2]
+	  $cerealNecessario = $aRow1[3]
+   WEnd
+   $currentResources = getResourcesQuantity()
+   If ($currentResources[0] < $madeiraNecessaria Or $currentResources[1] < $barroNecessario Or $currentResources[2] < $ferroNecessario Or $currentResources[3] < $cerealNecessario) Then
+	  MsgBox(0,"Not Enough Resources", "Not enough Resources")
+	  $haveEnoughResources = False;
+   Else
+	  MsgBox(0,"Recursos Suficientes","Ready to Go")
+	  $haveEnoughResources = True;
+	EndIf
+   _SQLite_Close()
+   return $haveEnoughResources
+EndFunc
+Func getCurrentlvl($buildOrFieldName)
+   if ($buildOrFieldName == "B" Or $buildOrFieldName == "P" Or $buildOrFieldName == "M" Or $buildOrFieldName == "C") Then ; se for um campo de recursos, obter o nível mais baixo
+	  smartURL("/dorf1.php")
+	  $resourcesArray = getResourcesId()
+	  $lowestLevel = 255
+	  For $i = 0 To 17
+		 if $buildOrFieldName == $resourcesArray[$i] Then
+		 $lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$i&"].alt.match(/\d+/)[0]")
+			if $lvlOfCurrentId < $lowestLevel Then
+			   $lowestLevel = $lvlOfCurrentId
+			   EndIf
+		 EndIf
+	  Next
+	  return $lowestLevel
+   Else
+	  $buildingLevel = getBuildingLvl($buildOrFieldName)
+	  return $buildingLevel
+   EndIf
+
    EndFunc
+
+
+
+
+
+
+

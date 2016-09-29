@@ -15,8 +15,11 @@ GUISetState(@SW_SHOW)
 While(1)
 $guiMsg = GUIGetMsg()
 Switch($guiMsg)
-	Case $loginButton
+Case $loginButton
 		login(GuiCtrlread($userName), GUICtrlRead($password), GUICtrlRead($serverURL))
+		;_SQLite_Startup() ; inicia ligação à base de dados
+		;checkIfThereAreEnoughResources("edificioPrincipal")
+		;_SQLite_Shutdown()
 	Case $GUI_EVENT_CLOSE
 		ExitLoop
 	Case $funcButton
