@@ -460,20 +460,22 @@ Func callFunc($funcParams); gui command caller
 		For $i=1 To Ubound($funcParams)-1
 			$funcParams[$i] = $funcParams[$i]
 		Next
-		MsgBox(0,"", $funcParams[1])
 		Call($funcName, $funcParams)
 EndFunc
 Func hourProduction()
 	Local $production[4]
 	For $i = 0 To 3
-		$production[$i] = _FFCmd("/\d+/.exec(document.getElementsByClassName('num')[1].innerHTML)[0]")
-		MsgBox(0,0,$production[$i])
+		$production[$i] = _FFCmd("/\d+/.exec(window.content.document.getElementsByClassName('num')[" & $i & "].innerHTML)[0]")
 	Next
+	return $production
 	EndFunc
-Func thinkV01();thiks like a stupid kid but more often
+
+Func thinkV01($first);thiks like a stupid kid but more often
+	If $first == True Then
 	$balanceResourcesTimer = TimerInit()
 	$goOnAdventure = TimerInit()
-	If TimerDiff($balanceResourcesTimer) > 50000 Then
+	EndIf
+	If TimerDiff($balanceResourcesTimer) > 5000 Then
 		$balanceResourcesTimer = TimerInit()
 		balanceResources()
 	EndIf
@@ -481,6 +483,5 @@ Func thinkV01();thiks like a stupid kid but more often
 		$goOnAdventure = TimerInit()
 		balanceResources()
 	EndIf
-
-
-	EndFunc
+	return False
+EndFunc

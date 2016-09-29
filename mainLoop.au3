@@ -12,19 +12,23 @@ $funcButton = GUICtrlCreateButton("Run", 50, 500, 150)
 $funcInput = GUICtrlCreateInput("", 250, 500, 500)
 GUISetState(@SW_SHOW)
 #EndRegion
-
-
+;Global $deleteMe = False
+;Global $firstTime = True
 While(1)
 $guiMsg = GUIGetMsg();updates gui state, incorporates a delay
 #Region GUI
 Switch($guiMsg)
 	Case $loginButton
 		login(GuiCtrlread($userName), GUICtrlRead($password), GUICtrlRead($serverURL))
+		$deleteMe = True
 	Case $GUI_EVENT_CLOSE
 		ExitLoop
 	Case $funcButton
 		callFunc(StringSplit(GUICtrlRead($funcInput), ",", 2)); don't worry, it works
 EndSwitch
 #EndRegion
-
+;If $deleteMe == True Then
+;
+;	$firstTime = thinkV01($firstTime)
+;	EndIf
 WEnd
