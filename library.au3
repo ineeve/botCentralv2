@@ -471,10 +471,10 @@ Func hourProduction()
 	EndFunc
 
 Func thinkV01($first);thiks like a stupid kid but more often
-	If $first == True Then
-	$balanceResourcesTimer = TimerInit()
-	$goOnAdventure = TimerInit()
-	EndIf
+	;If $first == True Then
+	;$balanceResourcesTimer = TimerInit()
+	;$goOnAdventure = TimerInit()
+	;EndIf
 	If TimerDiff($balanceResourcesTimer) > 5000 Then
 		$balanceResourcesTimer = TimerInit()
 		balanceResources()
@@ -483,5 +483,5 @@ Func thinkV01($first);thiks like a stupid kid but more often
 		$goOnAdventure = TimerInit()
 		balanceResources()
 	EndIf
-	return False
+	;return False
 EndFunc
