@@ -32,10 +32,11 @@ Switch($guiMsg)
 		For $i=1 To Ubound($funcParams)-1
 			$funcParams[$i] = $funcParams[$i]
 		Next
-		MsgBox(0,"", $funcParams[1])
-		Call($funcName, $funcParams)
-	;doTutorial()
-		$deleteMe = True
+		If Ubound($funcParams) > 1 Then
+		   Call($funcName, $funcParams)
+		Else
+		   Call($funcName)
+		   EndIf
 	Case $GUI_EVENT_CLOSE
 		ExitLoop
 	Case $funcButton

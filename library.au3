@@ -154,12 +154,15 @@ Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1);builds a non exi
 
    EndIf
 
-
-   $url = "/dorf2.php?a="&$aValue&"&id="&$buildingId&"&c="&$cValue
-   sleep(500)
-   _FFOpenURL($url)
+   $haveResources = checkIfThereAreEnoughResources($buildingName)
+   If ($haveResources == True) Then
+	  $url = "/dorf2.php?a="&$aValue&"&id="&$buildingId&"&c="&$cValue
+	  sleep(500)
+	  _FFOpenURL($url)
+   EndIf
 EndFunc
-Func upgradeBuilding($aValue);upgrades building from a value
+
+Func upgradeBuilding($aValue);upgrades building from a value ;!!Important!! need to change this function to upgrade From buildingName... Setup the Database with the relation between names and $avalues and $ids
    $cValue = getCValue()
    $url = "/dorf2.php?a="&$aValue&"&c="&$cValue
    _FFOpenURL($url)
@@ -452,8 +455,6 @@ Func smartURL($URL);url browsing optimization
 	  _FFOpenURL($URL)
    EndIf
 EndFunc
-
-
 Func checkIfThereAreEnoughResources($buildOrFieldName)
    Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
    $currentLvl = getCurrentLvl($buildOrFieldName)
@@ -500,9 +501,6 @@ Func getCurrentlvl($buildOrFieldName)
    EndIf
 
    EndFunc
-
-
-
 Func callFunc($funcParams); gui command caller
 		Local $funcName = $funcParams[0]
 		$funcParams[0] = "CallArgArray"
@@ -518,7 +516,6 @@ Func hourProduction()
 	Next
 	return $production
 	EndFunc
-
 Func thinkV01($first);thiks like a stupid kid but more often
 	;If $first == True Then
 	;$balanceResourcesTimer = TimerInit()
