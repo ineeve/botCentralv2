@@ -463,6 +463,24 @@ Func callFunc($funcParams); gui command caller
 		MsgBox(0,"", $funcParams[1])
 		Call($funcName, $funcParams)
 EndFunc
+Func hourProduction()
+	Local $production[4]
+	For $i = 0 To 3
+		$production[$i] = _FFCmd("/\d+/.exec(document.getElementsByClassName('num')[1].innerHTML)[0]")
+		MsgBox(0,0,$production[$i])
+	Next
+	EndFunc
 Func thinkV01();thiks like a stupid kid but more often
+	$balanceResourcesTimer = TimerInit()
+	$goOnAdventure = TimerInit()
+	If TimerDiff($balanceResourcesTimer) > 50000 Then
+		$balanceResourcesTimer = TimerInit()
+		balanceResources()
+	EndIf
+	If TimerDiff($goOnAdventure) > 1800000 Then
+		$goOnAdventure = TimerInit()
+		balanceResources()
+	EndIf
+
 
 	EndFunc
