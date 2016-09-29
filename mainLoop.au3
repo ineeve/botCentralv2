@@ -18,11 +18,11 @@ While(1)
 $guiMsg = GUIGetMsg();updates gui state, incorporates a delay
 #Region GUI
 Switch($guiMsg)
-Case $loginButton
+   Case $loginButton
 		login(GuiCtrlread($userName), GUICtrlRead($password), GUICtrlRead($serverURL))
-		;_SQLite_Startup() ; inicia ligação à base de dados
+		_SQLite_Startup() ; inicia ligação à base de dados
 		;checkIfThereAreEnoughResources("edificioPrincipal")
-		;_SQLite_Shutdown()
+		_SQLite_Shutdown()
 	Case $GUI_EVENT_CLOSE
 		ExitLoop
 	Case $funcButton
@@ -34,8 +34,6 @@ Case $loginButton
 		Next
 		MsgBox(0,"", $funcParams[1])
 		Call($funcName, $funcParams)
-		EndSwitch
-	WEnd
 	;doTutorial()
 		$deleteMe = True
 	Case $GUI_EVENT_CLOSE
