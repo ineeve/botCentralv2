@@ -167,7 +167,7 @@ Func upgradeBuilding($aValue);upgrades building from a value ;!!Important!! need
    $url = "/dorf2.php?a="&$aValue&"&c="&$cValue
    _FFOpenURL($url)
 EndFunc
-Func getBuildingLvl($buildingName,$buildingId = -1);returns building level
+Func getBuildingLvl($buildingName,$buildingId = -1);returns building level -> Won't Work In Non Portuguese Server
    smartURL("/dorf2.php")
    if $buildingId == -1 Then
 	  switch $buildingName
@@ -223,8 +223,12 @@ Func getBuildingLvl($buildingName,$buildingId = -1);returns building level
    Else
 	  $buildingId = $buildingId - 19
    EndIf
+   if _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt[0]") = "z" Then
+	  $lvlOfCurrentId = 0
+	  Else
    $lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt.match(/\d+/)[0]")
-   ;MsgBox(0,0,"nível ="&$lvlOfCurrentId)
+   EndIf
+   MsgBox(0,0,"nível ="&$lvlOfCurrentId)
    return $lvlOfCurrentId
    EndFunc
 Func getTutReward();please review me
@@ -404,7 +408,7 @@ Func balanceResources($recurso = -1);hero resource balance
 		  $indexMin = $i
 	   EndIf
 	Next
-	If(0.75 * $minValue > $recursos[3]) Then
+	If(0.625 * $minValue > $recursos[3]) Then
 	   $indexMin = 3
 	   $minValue = $recursos[3]
 	EndIf
@@ -472,10 +476,10 @@ Func checkIfThereAreEnoughResources($buildOrFieldName)
    WEnd
    $currentResources = getResourcesQuantity()
    If ($currentResources[0] < $madeiraNecessaria Or $currentResources[1] < $barroNecessario Or $currentResources[2] < $ferroNecessario Or $currentResources[3] < $cerealNecessario) Then
-	  MsgBox(0,"Not Enough Resources", "Not enough Resources")
+	  ;MsgBox(0,"Not Enough Resources", "Not enough Resources")
 	  $haveEnoughResources = False;
    Else
-	  MsgBox(0,"Recursos Suficientes","Ready to Go")
+	  ;MsgBox(0,"Recursos Suficientes","Ready to Go")
 	  $haveEnoughResources = True;
 	EndIf
    _SQLite_Close()
@@ -515,20 +519,82 @@ Func hourProduction()
 		$production[$i] = _FFCmd("/\d+/.exec(window.content.document.getElementsByClassName('num')[" & $i & "].innerHTML)[0]")
 	Next
 	return $production
-	EndFunc
-Func thinkV01($first);thiks like a stupid kid but more often
-	;If $first == True Then
+ EndFunc
+
+Func chooseFieldToEvolve() ;WORKING -> returns a char with the field To Evolve
+   $resourcesQuantity = getResourcesQuantity()
+	   $minValue = 65536
+	   $minIndex = -1
+	   Local $fieldToEvolveChar
+	   for $i= 0 To 2
+		  if $resourcesQuantity[$i] < $minValue Then
+			 $minValue = $resourcesQuantity[$i]
+			 $minIndex = $i
+		  EndIf
+
+	  Next
+		If $resourcesQuantity[3] * 0.625 > $minValue Then
+			$minIndex = 3
+		 EndIf
+
+		 switch $minIndex
+		 case 0
+			$fieldToEvolveChar = 'B'
+		 case 1
+			$fieldToEvolveChar = 'P'
+		 case 2
+			$fieldToEvolveChar = 'M'
+		 case 3
+			$fieldToEvolveChar = 'C'
+		 EndSwitch
+	  return $fieldToEvolveChar
+   EndFunc
+Func thinkV01();thiks like a stupid kid but more often
 	;$balanceResourcesTimer = TimerInit()
-	;$goOnAdventure = TimerInit()
-	;EndIf
-	If TimerDiff($balanceResourcesTimer) > 5000 Then
-		$balanceResourcesTimer = TimerInit()
-		balanceResources()
-	EndIf
-	If TimerDiff($goOnAdventure) > 1800000 Then
-		$goOnAdventure = TimerInit()
-		balanceResources()
-	EndIf
+	$goOnAdventure = TimerInit()
+	;A ideia aqui vai ser evoluir recursos
+	$upgradeFieldTimer = TimerInit()
+	$totalTime = 0
+	Local $hours,$minutes,$seconds
+	while true
+	   smartURL("/dorf1.php")
+	   if ($totalTime == 0) Then
+		 if _FFCmd(".getElementsByTagName('h5')[0].innerHTML.length") > 0 Then ; esta a construir algo (preciso testar esta funcao)
+			$len = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.length") ; tamanho
+			if $len == 7 Then
+			   $hours = _FFCmd(".getElementsByClassName('timer')[0].innerHTML[0]")
+			ElseIf $len==8 Then
+			   $hours = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring(0,2)")
+			EndIf
+			$minutes = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring("&$len-5&","&$len-3&")") ; minutos
+			$seconds = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring("&$len-2&")") ; segundos
+		 EndIf
+	  EndIf
+
+		 $totalTime = ($seconds + ($minutes*60)  + ($hours*3600))*1000
+		 ;msgBox(0,0,$totalTime)
+		 ;msgBox(0,0,TimerDiff($upgradeFieldTimer))
+		 If TimerDiff($upgradeFieldTimer) > $totalTime Then
+			$fieldToEvolve = chooseFieldToEvolve()
+			If checkIfThereAreEnoughResources($fieldToEvolve) Then
+			   upgradeField($fieldToEvolve)
+			   $upgradeFieldTimer = TimerInit()
+			EndIf
+		 EndIf
+   ;If TimerDiff($balanceResourcesTimer) > 60000 Then
+	;  $balanceResourcesTimer = TimerInit()
+	 ; balanceResources()
+  ; EndIf
+   If TimerDiff($goOnAdventure) > 1800000 Then
+	  $goOnAdventure = TimerInit()
+	  goOnAdventure()
+   EndIf
+	  sleep(50000  + 10000*Random())
+	   WEnd
+
+
+	;;;;;;;;;;;;;;;;;;
+
 	;return False
 EndFunc
 
