@@ -125,14 +125,14 @@ Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1);builds a non exi
 	  case "oficina"
 		 $aValue = 21
 		 $buildingId =33
-	  case "moinho"
-		 $aValue = 8
+		 case "casaFerragens"
+		 $aValue =13
 		 $buildingId = 34
-	  case "serracao"
-		 $aValue =5
-		 $buildingId = 35
 	  case "alvenaria"
 		 $aValue =6
+		 $buildingId = 35
+	  case "moinho"
+		 $aValue = 8
 		 $buildingId = 36
 	  case "fundicao"
 		 $aValue =6
@@ -154,12 +154,12 @@ Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1);builds a non exi
 
    EndIf
 
-   $haveResources = checkIfThereAreEnoughResources($buildingName)
-   If ($haveResources == True) Then
-	  $url = "/dorf2.php?a="&$aValue&"&id="&$buildingId&"&c="&$cValue
-	  sleep(500)
-	  _FFOpenURL($url)
-   EndIf
+   ;$haveResources = checkIfThereAreEnoughResources($buildingName)
+   ;If ($haveResources == True) Then
+	 $url = "/dorf2.php?a="&$aValue&"&id="&$buildingId&"&c="&$cValue
+	 sleep(500)
+	 _FFOpenURL($url)
+   ;EndIf
 EndFunc
 
 Func upgradeBuilding($aValue);upgrades building from a value ;!!Important!! need to change this function to upgrade From buildingName... Setup the Database with the relation between names and $avalues and $ids
@@ -476,10 +476,10 @@ Func checkIfThereAreEnoughResources($buildOrFieldName)
    WEnd
    $currentResources = getResourcesQuantity()
    If ($currentResources[0] < $madeiraNecessaria Or $currentResources[1] < $barroNecessario Or $currentResources[2] < $ferroNecessario Or $currentResources[3] < $cerealNecessario) Then
-	  ;MsgBox(0,"Not Enough Resources", "Not enough Resources")
+	  MsgBox(0,"Not Enough Resources", "Not enough Resources")
 	  $haveEnoughResources = False;
    Else
-	  ;MsgBox(0,"Recursos Suficientes","Ready to Go")
+	  MsgBox(0,"Recursos Suficientes","Ready to Go")
 	  $haveEnoughResources = True;
 	EndIf
    _SQLite_Close()
@@ -556,9 +556,11 @@ Func thinkV01();thiks like a stupid kid but more often
 	$upgradeFieldTimer = TimerInit()
 	$totalTime = 0
 	Local $hours,$minutes,$seconds
+	MsgBox(0,0,"Tou pensando")
 	while true
 	   smartURL("/dorf1.php")
 	   if ($totalTime == 0) Then
+		  MsgBox(0,0,"Entrei no ciclo, totaltime = 0")
 		 if _FFCmd(".getElementsByTagName('h5')[0].innerHTML.length") > 0 Then ; esta a construir algo (preciso testar esta funcao)
 			$len = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.length") ; tamanho
 			if $len == 7 Then
@@ -572,7 +574,7 @@ Func thinkV01();thiks like a stupid kid but more often
 	  EndIf
 
 		 $totalTime = ($seconds + ($minutes*60)  + ($hours*3600))*1000
-		 ;msgBox(0,0,$totalTime)
+		 msgBox(0,0,$totalTime)
 		 ;msgBox(0,0,TimerDiff($upgradeFieldTimer))
 		 If TimerDiff($upgradeFieldTimer) > $totalTime Then
 			$fieldToEvolve = chooseFieldToEvolve()
@@ -589,10 +591,9 @@ Func thinkV01();thiks like a stupid kid but more often
 	  $goOnAdventure = TimerInit()
 	  goOnAdventure()
    EndIf
+   MsgBox(0,0,"Agora vou dormir...")
 	  sleep(50000  + 10000*Random())
 	   WEnd
-
-
 	;;;;;;;;;;;;;;;;;;
 
 	;return False

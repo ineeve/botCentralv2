@@ -1,4 +1,4 @@
-#include "library.au3"
+#include "libraryEN.au3"
 #include <GUIConstantsEx.au3>
 
 #Region Setup
@@ -7,7 +7,7 @@ $guiHandler = GUICreate("TravianBot v2", 800, 600, -1, -1)
 $loginButton = GUICtrlCreateButton("login", 50, 550, 50)
 $userName = GUICtrlCreateInput("BotCentral000", 120, 550, 150)
 $password = GUICtrlCreateInput("123456789", 300, 550, 150)
-$serverURL = GUICtrlCreateInput("http://tx3.travian.pt/", 600, 550, 150)
+$serverURL = GUICtrlCreateInput("http://tx3.travian.com/", 600, 550, 150)
 $funcButton = GUICtrlCreateButton("Run", 50, 500, 150)
 $funcInput = GUICtrlCreateInput("", 250, 500, 500)
 GUISetState(@SW_SHOW)
@@ -21,8 +21,7 @@ Switch($guiMsg)
    Case $loginButton
 		login(GuiCtrlread($userName), GUICtrlRead($password), GUICtrlRead($serverURL))
 		_SQLite_Startup() ; inicia ligação à base de dados
-		;checkIfThereAreEnoughResources("edificioPrincipal")
-		thinkV01() ; The Most Powerful Function Ever Created
+		;thinkV01() ; The Most Powerful Function Ever
 		_SQLite_Shutdown()
 	Case $GUI_EVENT_CLOSE
 		ExitLoop
