@@ -75,88 +75,24 @@ func upgradeField($fieldName, $optionalId =-1 );upgrades field, default is lowes
    $url = "/dorf1.php?a="&$idOfTheLowestLevelField&"&c="&$cValue
    _FFOpenURL($url)
 EndFunc
-Func buildBuilding($buildingName,$buildingId = -1,$aValue = -1);builds a non existing building on the village
+Func buildBuilding($buildingName,$placeID = -1,$aValue = -1);builds a non existing building on the village
+
+
    $cValue = getCValue()
    smartURL("/dorf2.php")
-   if ($aValue == -1 And $buildingId == -1) Then
-	  switch $buildingName
-	  case "armazem"
-		 $aValue = 10
-		 $buildingId = 19
-	  case "celeiro"
-		 $aValue=11
-		 $buildingId=20
-	  case "esconderijo"
-		 $aValue=23
-		 $buildingId=21
-	  case "embaixada"
-		 $aValue = 18
-		 $buildingId=22
-	  case "armadilhas"
-		 $aValue=36
-		 $buildingId=23
-	  case "mercado"
-		 $aValue = 17
-		 $buildingId=24
-	  case "residencia"
-		 $aValue = 25
-		 $buildingId=25
-	  case "palacio"
-		 $aValue = 26
-		 $buildingId =25
-	  case "pedreiro"
-		 $aValue = 34
-		 $buildingId =27
-	  case "tesouraria"
-		 $aValue = 27
-		 $buildingId = 28
-	  case "quartel"
-		 $aValue = 19
-		 $buildingId = 29
-	  case "mansaoHeroi"
-		 $aValue = 37
-		 $buildingId = 30
-	  case "academia"
-		 $aValue = 22
-		 $buildingId = 31
-	  case "cavalarica"
-		 $aValue = 20
-		 $buildingId = 32
-	  case "oficina"
-		 $aValue = 21
-		 $buildingId =33
-		 case "casaFerragens"
-		 $aValue =13
-		 $buildingId = 34
-	  case "alvenaria"
-		 $aValue =6
-		 $buildingId = 35
-	  case "moinho"
-		 $aValue = 8
-		 $buildingId = 36
-	  case "fundicao"
-		 $aValue =6
-		 $buildingId = 36
-	  case "padaria"
-		 $aValue =9
-		 $buildingId = 37
-	  case "grandeArmazem"
-		 $aValue =38
-		 $buildingId = 38
-	  case "palicada"
-		 $aValue = 33
-		 $buildingId =40
-	  case "prm"
-		 $aValue = 16
-		 $buildingId = 39
-
-	  EndSwitch
-
+   if ($aValue == -1 And $placeID == -1) Then
+	  Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
+	  Local $hQuery,$aRow;
+	  _SQLite_Query ( -1, "Select placeID,aValue From buildingLocations Where buildingName = '"&$buildingName&"'", $hQuery )
+	  While _SQLite_FetchData($hQuery1, $aRow1) = $SQLITE_OK
+		 $placeID = $aRow1[0]
+		 $aValue = $aRow1[1]
+	  WEnd
    EndIf
 
    ;$haveResources = checkIfThereAreEnoughResources($buildingName)
    ;If ($haveResources == True) Then
-	 $url = "/dorf2.php?a="&$aValue&"&id="&$buildingId&"&c="&$cValue
+	 $url = "/dorf2.php?a="&$aValue&"&id="&$placeID&"&c="&$cValue
 	 sleep(500)
 	 _FFOpenURL($url)
    ;EndIf
