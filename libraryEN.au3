@@ -494,52 +494,20 @@ Func chooseFieldToEvolve() ;WORKING -> returns a char with the field To Evolve
 	Return $fieldToEvolveChar
 EndFunc   ;==>chooseFieldToEvolve
 Func thinkV01() ;thiks like a stupid kid but more often
-	;$balanceResourcesTimer = TimerInit()
-	$goOnAdventure = TimerInit()
-	;A ideia aqui vai ser evoluir recursos
-	$upgradeFieldTimer = TimerInit()
-	$totalTime = 0
-	Local $hours, $minutes, $seconds
-	MsgBox(0, 0, "Tou pensando")
-	While True
-		smartURL("/dorf1.php")
-		If ($totalTime == 0) Then
-			MsgBox(0, 0, "Entrei no ciclo, totaltime = 0")
-			If _FFCmd(".getElementsByTagName('h5')[0].innerHTML.length") > 0 Then ; esta a construir algo (preciso testar esta funcao)
-				$len = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.length") ; tamanho
-				If $len == 7 Then
-					$hours = _FFCmd(".getElementsByClassName('timer')[0].innerHTML[0]")
-				ElseIf $len == 8 Then
-					$hours = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring(0,2)")
-				EndIf
-				$minutes = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring(" & $len - 5 & "," & $len - 3 & ")") ; minutos
-				$seconds = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring(" & $len - 2 & ")") ; segundos
-			EndIf
-		EndIf
+	;Evolui recursos todos para nível 3;
+	;Coloca edificio principal nivel 5;
+	;Armazem nivel2;
+	;Celeiro nivel2;
+	;Evolui recursos todos para 4;
+	;PontoReuniaoMilitar nivel 1;
+	;Quartel nivel3;
+	;Recursos todos para 5;
+	;Academia nivel5;
+	;Ferreiro nivel3;
+	;Cavalarica nivel 3;
+	;Armazem nivel 4;
+	;Pesquisar Cavalo Theutate;
 
-		$totalTime = ($seconds + ($minutes * 60) + ($hours * 3600)) * 1000
-		MsgBox(0, 0, $totalTime)
-		;msgBox(0,0,TimerDiff($upgradeFieldTimer))
-		If TimerDiff($upgradeFieldTimer) > $totalTime Then
-			$fieldToEvolve = chooseFieldToEvolve()
-			If checkIfThereAreEnoughResources($fieldToEvolve) Then
-				upgradeField($fieldToEvolve)
-				$upgradeFieldTimer = TimerInit()
-			EndIf
-		EndIf
-		;If TimerDiff($balanceResourcesTimer) > 60000 Then
-		;  $balanceResourcesTimer = TimerInit()
-		; balanceResources()
-		; EndIf
-		If TimerDiff($goOnAdventure) > 1800000 Then
-			$goOnAdventure = TimerInit()
-			goOnAdventure()
-		EndIf
-		MsgBox(0, 0, "Agora vou dormir...")
-		Sleep(50000 + 10000 * Random())
-	WEnd
-	;;;;;;;;;;;;;;;;;;
 
-	;return False
 EndFunc   ;==>thinkV01
 
