@@ -56,11 +56,20 @@ Func getResourcesId() ; //APPROVED LANG ENG
 	Next
 	Return $resourcesArray
 EndFunc   ;==>getResourcesId
-Func getIdOfTheLowestLevelField($fieldName) ;returns the id of the lowest field level (of that specific type) //APPROVED //CORE
+Func getIdOfTheLowestLevelField($fieldName=-1) ;returns the id of the lowest field level (of that specific type) //APPROVED //CORE
 	smartURL("/dorf1.php")
 	$resourcesArray = getResourcesId()
 	$idOfTheLowestLevelField = -1
 	$lowestLevel = 255
+	If $fieldName = -1 Then
+		For $i = 0 To 17
+			$lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')[" & $i & "].alt.match(/\d+/)[0]")
+			If $lvlOfCurrentId < $lowestLevel Then
+				$idOfTheLowestLevelField = $i + 1
+				$lowestLevel = $lvlOfCurrentId
+			EndIf
+		Next
+	Else
 	For $i = 0 To 17
 		If $fieldName == $resourcesArray[$i] Then
 			$lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')[" & $i & "].alt.match(/\d+/)[0]")
@@ -70,8 +79,12 @@ Func getIdOfTheLowestLevelField($fieldName) ;returns the id of the lowest field 
 			EndIf
 		EndIf
 	Next
+	EndIf
 	Return $idOfTheLowestLevelField
 EndFunc   ;==>getIdOfTheLowestLevelField
+Func getFieldType($fieldId); /APPROVED //CORE
+	return _FFCMD("document.getElementsByTagName('Area')[0].alt.substring(0,2)")
+	EndFunc
 Func upgradeField($fieldName, $optionalId = -1) ;upgrades field, default is lowest level of that type //APRROVED //UTIL
 	Local $idOfTheLowestLevelField
 	If ($optionalId == -1) Then
@@ -259,7 +272,7 @@ Func goOnAdventure() ;takes the hero to adventure
 	_FFOpenURL($adventureURL)
 	_FFCmd(".getElementById('start').click()")
 EndFunc   ;==>goOnAdventure
-Func doTutorial() ;please fix this crap
+Func doTutorial() ;please fix this crap //SHIT UTIL
 
 	;fazer missoes do tutorial
 	;missão1
@@ -382,7 +395,7 @@ Func doTutorial() ;please fix this crap
 	getTutReward()
 
 EndFunc   ;==>doTutorial
-Func getMissionRewards() ;gets mission rewards, code needs cleanup for noerror of firefox
+Func getMissionRewards() ;gets mission rewards, code needs cleanup for noerror of firefox //BUG UTIL
 	Local $availableReward[10]
 	Sleep(1000)
 	For $i = 0 To 5
@@ -395,15 +408,15 @@ Func getMissionRewards() ;gets mission rewards, code needs cleanup for noerror o
 		EndIf
 	Next
 EndFunc   ;==>getMissionRewards
-Func getResourcesQuantity() ;returns array of resources
+Func getResourcesQuantity() ;returns array of resources //FIXED PROBLEM WITH , and .
 	; madeira barro ferro cereal, armazem, celeiro, cerealLivre
 	Local $recursos[7]
 	For $i = 0 To 3
-		$recursos[$i] = _FFCmd(".getElementById(""stockBarResource" & String($i + 1) & """).getElementsByTagName(""span"")[0].innerHTML.replace(/\./,'')")
+		$recursos[$i] = _FFCmd(".getElementById(""stockBarResource" & String($i + 1) & """).getElementsByTagName(""span"")[0].innerHTML.replace(/\.|,/,'')")
 	Next
-	$recursos[4] = _FFCmd(".getElementById('stockBarWarehouse').innerHTML.replace(/\./,'')")
-	$recursos[5] = _FFCmd(".getElementById('stockBarGranary').innerHTML.replace(/\./,'')")
-	$recursos[6] = _FFCmd(".getElementById('stockBarFreeCrop').innerHTML.replace(/\./,'')")
+	$recursos[4] = _FFCmd(".getElementById('stockBarWarehouse').innerHTML.replace(/\.|,/,'')")
+	$recursos[5] = _FFCmd(".getElementById('stockBarGranary').innerHTML.replace(/\.|,/,'')")
+	$recursos[6] = _FFCmd(".getElementById('stockBarFreeCrop').innerHTML.replace(/\.|,/,'')")
 	Return $recursos
 EndFunc   ;==>getResourcesQuantity
 Func balanceResources($recurso = -1) ;hero resource balance
@@ -561,52 +574,14 @@ Func chooseFieldToEvolve() ;WORKING -> returns a char with the field To Evolve
 	Return $fieldToEvolveChar
 EndFunc   ;==>chooseFieldToEvolve
 Func thinkV01() ;thiks like a stupid kid but more often
-	;$balanceResourcesTimer = TimerInit()
-	$goOnAdventure = TimerInit()
-	;A ideia aqui vai ser evoluir recursos
-	$upgradeFieldTimer = TimerInit()
-	$totalTime = 0
-	Local $hours, $minutes, $seconds
-	MsgBox(0, 0, "Tou pensando")
-	While True
-		smartURL("/dorf1.php")
-		If ($totalTime == 0) Then
-			MsgBox(0, 0, "Entrei no ciclo, totaltime = 0")
-			If _FFCmd(".getElementsByTagName('h5')[0].innerHTML.length") > 0 Then ; esta a construir algo (preciso testar esta funcao)
-				$len = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.length") ; tamanho
-				If $len == 7 Then
-					$hours = _FFCmd(".getElementsByClassName('timer')[0].innerHTML[0]")
-				ElseIf $len == 8 Then
-					$hours = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring(0,2)")
-				EndIf
-				$minutes = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring(" & $len - 5 & "," & $len - 3 & ")") ; minutos
-				$seconds = _FFCmd(".getElementsByClassName('timer')[0].innerHTML.substring(" & $len - 2 & ")") ; segundos
-			EndIf
-		EndIf
-
-		$totalTime = ($seconds + ($minutes * 60) + ($hours * 3600)) * 1000
-		MsgBox(0, 0, $totalTime)
-		;msgBox(0,0,TimerDiff($upgradeFieldTimer))
-		If TimerDiff($upgradeFieldTimer) > $totalTime Then
-			$fieldToEvolve = chooseFieldToEvolve()
-			If checkIfThereAreEnoughResources($fieldToEvolve) Then
-				upgradeField($fieldToEvolve)
-				$upgradeFieldTimer = TimerInit()
-			EndIf
-		EndIf
-		;If TimerDiff($balanceResourcesTimer) > 60000 Then
-		;  $balanceResourcesTimer = TimerInit()
-		; balanceResources()
-		; EndIf
-		If TimerDiff($goOnAdventure) > 1800000 Then
-			$goOnAdventure = TimerInit()
-			goOnAdventure()
-		EndIf
-		MsgBox(0, 0, "Agora vou dormir...")
-		Sleep(50000 + 10000 * Random())
+	Local $isBuilding = False
+	Local $timer
+While getCurrentlvl("Wo")<3 || getCurrentlvl("Cl")< 3 || getCurrentlvl("Ir")< 3 || getCurrentlvl("Cr")< 3
+	If $isBuilding == False && checkIfThereAreEnoughResources(getFieldType(getIdOfTheLowestLevelField())) == True Then
+		upgradeField("", getIdOfTheLowestLevelField(Default))
+		$timer = TimerInit();
+		$isBuilding = True
+	EndIf
+	If TimerDiff($timer) > 69; START EDIT HERE
 	WEnd
-	;;;;;;;;;;;;;;;;;;
-
-	;return False
 EndFunc   ;==>thinkV01
-
