@@ -22,7 +22,7 @@ Switch($guiMsg)
 		login(GuiCtrlread($userName), GUICtrlRead($password), GUICtrlRead($serverURL))
 		_SQLite_Startup() ; inicia ligação à base de dados
 		;thinkV01() ; The Most Powerful Function Ever
-		_SQLite_Shutdown()
+		;_SQLite_Shutdown()
 	Case $GUI_EVENT_CLOSE
 		ExitLoop
 	Case $funcButton

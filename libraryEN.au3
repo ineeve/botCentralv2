@@ -413,97 +413,63 @@ func upgradeField($fieldName, $optionalId =-1 );upgrades field, default is lowes
    $url = "/dorf1.php?a="&$idOfTheLowestLevelField&"&c="&$cValue
    _FFOpenURL($url)
 EndFunc
-Func buildBuilding($buildingName,$placeID = -1,$aValue = -1);builds a non existing building on the village
-
-
+Func auxBuildBuilding($buildingName,$placeID = -1,$aValue = -1);APPROVED
    $cValue = getCValue()
    smartURL("/dorf2.php")
    if ($aValue == -1 And $placeID == -1) Then
 	  Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
 	  Local $hQuery,$aRow;
 	  _SQLite_Query ( -1, "Select placeID,aValue From buildingLocations Where buildingName = '"&$buildingName&"'", $hQuery )
-	  While _SQLite_FetchData($hQuery1, $aRow1) = $SQLITE_OK
-		 $placeID = $aRow1[0]
-		 $aValue = $aRow1[1]
+	  While _SQLite_FetchData($hQuery, $aRow) = $SQLITE_OK
+		 $placeID = $aRow[0]
+		 $aValue = $aRow[1]
 	  WEnd
    EndIf
-
    ;$haveResources = checkIfThereAreEnoughResources($buildingName)
    ;If ($haveResources == True) Then
 	 $url = "/dorf2.php?a="&$aValue&"&id="&$placeID&"&c="&$cValue
 	 sleep(500)
 	 _FFOpenURL($url)
+	 _SQLite_Close()
    ;EndIf
 EndFunc
-
-Func upgradeBuilding($aValue);upgrades building from a value ;!!Important!! need to change this function to upgrade From buildingName... Setup the Database with the relation between names and $avalues and $ids
+Func auxUpgradeBuilding($buildingName);APPROVED
+   Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
    $cValue = getCValue()
-   $url = "/dorf2.php?a="&$aValue&"&c="&$cValue
+   Local $hQuery,$aRow, $placeID
+   _SQLite_Query ( -1, "Select placeID From buildingLocations Where buildingName = '"&$buildingName&"'", $hQuery )
+   While _SQLite_FetchData($hQuery, $aRow) = $SQLITE_OK
+		 $placeID = $aRow[0]
+   WEnd
+	;MsgBox(0,0,$placeID)
+   $url = "/dorf2.php?a="&$placeID&"&c="&$cValue
    _FFOpenURL($url)
+   _SQLite_Close()
 EndFunc
-Func getBuildingLvl($buildingName,$buildingId = -1);returns building level -> Won't Work In Non Portuguese Server
-   smartURL("/dorf2.php")
-   if $buildingId == -1 Then
-	  switch $buildingName
-	  case "armazem"
-		 $buildingId = 0
-	  case "celeiro"
-		 $buildingId=1
-	  case "esconderijo"
-		 $buildingId=2
-	  case "embaixada"
-		 $buildingId=3
-	  case "armadilhas"
-		 $buildingId=4
-	  case "mercado"
-		 $buildingId=5
-	  case "residencia"
-		 $buildingId=6
-	  case "palacio"
-		 $buildingId =6
-	  case "edificioPrincipal"
-		 $buildingId = 7
-	  case "pedreiro"
-		 $buildingId =8
-	  case "tesouraria"
-		 $buildingId = 29
-	  case "quartel"
-		 $buildingId = 10
-	  case "mansaoHeroi"
-		 $buildingId = 1
-	  case "academia"
-		 $buildingId = 12
-	  case "cavalarica"
-		 $buildingId = 13
-	  case "oficina"
-		 $buildingId =14
-	  case "moinho"
-		 $buildingId = 15
-	  case "serracao"
-		 $buildingId = 16
-	  case "alvenaria"
-		 $buildingId = 17
-	  case "fundicao"
-		 $buildingId = 17
-	  case "padaria"
-		 $buildingId = 18
-	  case "grandeArmazem"
-		 $buildingId = 19
-	  case "pontoReuniaoMilitar"
-		 $buildingId = 20
-	  case "palicada"
-		 $buildingId =21
-	  EndSwitch
+Func upgradeBuilding($buildingName)
+   if getBuildingLvl($buildingName) == 0 Then
+	  auxBuildBuilding($buildingName)
    Else
-	  $buildingId = $buildingId - 19
+	  auxUpgradeBuilding($buildingName)
    EndIf
-   if _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt[0]") = "z" Then
+EndFunc
+Func getBuildingLvl($buildingName,$buildingId = -1);APPROVED LANG ENG
+   Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
+   smartURL("/dorf2.php")
+   Local $placeID, $hQuery, $aRow
+   _SQLite_Query ( -1, "Select placeID From buildingLocations Where buildingName = '"&$buildingName&"'", $hQuery )
+   While _SQLite_FetchData($hQuery, $aRow) = $SQLITE_OK
+		 $placeID = $aRow[0]
+	  WEnd
+	  $placeID = $placeID - 19
+   if _FFCMD(".getElementsByTagName('Area')["&$placeID&"].alt.substring(0,8)") = "Building" Then
 	  $lvlOfCurrentId = 0
 	  Else
-   $lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt.match(/\d+/)[0]")
+   $lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$placeID&"].alt.match(/\d+/)[0]")
    EndIf
    MsgBox(0,0,"nível ="&$lvlOfCurrentId)
    return $lvlOfCurrentId
+   _SQLite_Close()
    EndFunc
 Func getTutReward();please review me
    smartURL("/dorf1.php")
@@ -513,14 +479,20 @@ Func getTutReward();please review me
    _FFCMD(".getElementsByClassName('green questButtonNext')[0].click()")
 EndFunc
 Func goOnAdventure();takes the hero to adventure
-   if _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> "/hero_adventure.php" Then
+   $stringToCheck = "Start adventure"
+   If _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> "/hero_adventure.php" Then
 	  _FFOpenURL("/hero_adventure.php")
    EndIf
 
    sleep(1000)
    $adventureURL = _FFCmd(".getElementsByClassName('gotoAdventure arrow')[1].href")
    _FFOpenURL($adventureURL)
-   _FFCmd(".getElementById('start').click()")
+   If _FFCmd(".getElementsByClassName('green ')[3].value") == $stringToCheck Then
+	  _FFCmd(".getElementsByClassName('green ')[3].click()")
+   Else
+	  _FFCmd(".getElementsByClassName('green ')[2].click()")
+   EndIf
+
 EndFunc
 Func doTutorial();please fix this crap
 
@@ -751,10 +723,10 @@ Func checkIfThereAreEnoughResources($buildOrFieldName)
 	WEnd
 	$currentResources = getResourcesQuantity()
 	If ($currentResources[0] < $madeiraNecessaria Or $currentResources[1] < $barroNecessario Or $currentResources[2] < $ferroNecessario Or $currentResources[3] < $cerealNecessario) Then
-		MsgBox(0, "Not Enough Resources", "Not enough Resources")
+		;MsgBox(0, "Not Enough Resources", "Not enough Resources")
 		$haveEnoughResources = False ;
 	Else
-		MsgBox(0, "Recursos Suficientes", "Ready to Go")
+		;MsgBox(0, "Recursos Suficientes", "Ready to Go")
 		$haveEnoughResources = True ;
 	EndIf
 	_SQLite_Close()
