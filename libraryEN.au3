@@ -77,6 +77,7 @@ Func getIdOfTheLowestLevelField($fieldName=-1) ;returns the id of the lowest fie
 				$idOfTheLowestLevelField = $i + 1
 				$lowestLevel = $lvlOfCurrentId
 			EndIf
+<<<<<<< HEAD
 		EndIf
 	Next
 	EndIf
@@ -396,6 +397,256 @@ Func doTutorial() ;please fix this crap //SHIT UTIL
 
 EndFunc   ;==>doTutorial
 Func getMissionRewards() ;gets mission rewards, code needs cleanup for noerror of firefox //BUG UTIL
+=======
+	  EndIf
+   Next
+   return $idOfTheLowestLevelField
+EndFunc
+func upgradeField($fieldName, $optionalId =-1 );upgrades field, default is lowest level of that type
+   Local  $idOfTheLowestLevelField
+   if ($optionalId == -1) Then
+	  $idOfTheLowestLevelField = getIdOfTheLowestLevelField($fieldName)
+   Else
+	  $idOfTheLowestLevelField = $optionalId
+   EndIf
+   $cValue = getCValue()
+   $url = "/dorf1.php?a="&$idOfTheLowestLevelField&"&c="&$cValue
+   _FFOpenURL($url)
+EndFunc
+Func buildBuilding($buildingName,$placeID = -1,$aValue = -1);builds a non existing building on the village
+
+
+   $cValue = getCValue()
+   smartURL("/dorf2.php")
+   if ($aValue == -1 And $placeID == -1) Then
+	  Local $hDskDb = _SQLite_Open(@WorkingDir & "\travian.db")
+	  Local $hQuery,$aRow;
+	  _SQLite_Query ( -1, "Select placeID,aValue From buildingLocations Where buildingName = '"&$buildingName&"'", $hQuery )
+	  While _SQLite_FetchData($hQuery1, $aRow1) = $SQLITE_OK
+		 $placeID = $aRow1[0]
+		 $aValue = $aRow1[1]
+	  WEnd
+   EndIf
+
+   ;$haveResources = checkIfThereAreEnoughResources($buildingName)
+   ;If ($haveResources == True) Then
+	 $url = "/dorf2.php?a="&$aValue&"&id="&$placeID&"&c="&$cValue
+	 sleep(500)
+	 _FFOpenURL($url)
+   ;EndIf
+EndFunc
+
+Func upgradeBuilding($aValue);upgrades building from a value ;!!Important!! need to change this function to upgrade From buildingName... Setup the Database with the relation between names and $avalues and $ids
+   $cValue = getCValue()
+   $url = "/dorf2.php?a="&$aValue&"&c="&$cValue
+   _FFOpenURL($url)
+EndFunc
+Func getBuildingLvl($buildingName,$buildingId = -1);returns building level -> Won't Work In Non Portuguese Server
+   smartURL("/dorf2.php")
+   if $buildingId == -1 Then
+	  switch $buildingName
+	  case "armazem"
+		 $buildingId = 0
+	  case "celeiro"
+		 $buildingId=1
+	  case "esconderijo"
+		 $buildingId=2
+	  case "embaixada"
+		 $buildingId=3
+	  case "armadilhas"
+		 $buildingId=4
+	  case "mercado"
+		 $buildingId=5
+	  case "residencia"
+		 $buildingId=6
+	  case "palacio"
+		 $buildingId =6
+	  case "edificioPrincipal"
+		 $buildingId = 7
+	  case "pedreiro"
+		 $buildingId =8
+	  case "tesouraria"
+		 $buildingId = 29
+	  case "quartel"
+		 $buildingId = 10
+	  case "mansaoHeroi"
+		 $buildingId = 1
+	  case "academia"
+		 $buildingId = 12
+	  case "cavalarica"
+		 $buildingId = 13
+	  case "oficina"
+		 $buildingId =14
+	  case "moinho"
+		 $buildingId = 15
+	  case "serracao"
+		 $buildingId = 16
+	  case "alvenaria"
+		 $buildingId = 17
+	  case "fundicao"
+		 $buildingId = 17
+	  case "padaria"
+		 $buildingId = 18
+	  case "grandeArmazem"
+		 $buildingId = 19
+	  case "pontoReuniaoMilitar"
+		 $buildingId = 20
+	  case "palicada"
+		 $buildingId =21
+	  EndSwitch
+   Else
+	  $buildingId = $buildingId - 19
+   EndIf
+   if _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt[0]") = "z" Then
+	  $lvlOfCurrentId = 0
+	  Else
+   $lvlOfCurrentId = _FFCMD(".getElementsByTagName('Area')["&$buildingId&"].alt.match(/\d+/)[0]")
+   EndIf
+   MsgBox(0,0,"nível ="&$lvlOfCurrentId)
+   return $lvlOfCurrentId
+   EndFunc
+Func getTutReward();please review me
+   smartURL("/dorf1.php")
+   sleep(1000)
+   _FFCmd(".getElementById('questmasterButton').click()")
+   sleep(1000)
+   _FFCMD(".getElementsByClassName('green questButtonNext')[0].click()")
+EndFunc
+Func goOnAdventure();takes the hero to adventure
+   if _FFCmd(".URL.match(/travian[^\/]+(\/[^\?]+)\?*/)[1]") <> "/hero_adventure.php" Then
+	  _FFOpenURL("/hero_adventure.php")
+   EndIf
+
+   sleep(1000)
+   $adventureURL = _FFCmd(".getElementsByClassName('gotoAdventure arrow')[1].href")
+   _FFOpenURL($adventureURL)
+   _FFCmd(".getElementById('start').click()")
+EndFunc
+Func doTutorial();please fix this crap
+
+   ;fazer missoes do tutorial
+   ;missão1
+   sleep(500)
+   If _FFCmd(".getElementsByClassName('green questButtonNext highlighted on').length") == 0 Then
+	  Return
+   EndIf
+   _FFCmd(".getElementsByClassName('green questButtonNext highlighted on').click()")
+
+   sleep(2000)
+
+   _FFCmd(".getElementById('questmasterButton').click()")
+   sleep(3000)
+   _FFCmd(".getElementById('dialogCancelButton').click()")
+   sleep(3000)
+   _FFCmd(".getElementById('questmasterButton').click()")
+   sleep(3000)
+   _FFCmd(".getElementById('questTutorialLightBulb').click()")
+   sleep(3000)
+   _FFCmd(".getElementsByClassName('green questButtonNext')[0].click()")
+   sleep(3000)
+
+   ;evoluir bosque para nivel1
+   _FFOpenURL("/build.php?id=1")
+   upgradeField("B",1)
+   ;obter recompensa
+   sleep(500)
+   getTutReward() ; termina de imediato
+   sleep(500)
+
+   ;evoluir bosque para nivel 2
+   _FFOpenURL("/build.php?id=1")
+   upgradeField("B",1)
+   sleep(500)
+   getTutReward()
+   sleep(500)
+   ;missao evoluir campo de cereais para nivel 1
+   _FFOpenURL("/build.php?id=2"); para o tutorial detetar que o campo foi aberto
+   upgradeField("C")
+
+   sleep(500)
+   getTutReward()
+
+   ;missao alterar producao do heroi para barro
+   balanceResources(1)
+
+   getTutReward()
+
+
+   ;missao entrar na aldeia e construir armazem
+   buildBuilding("armazem")
+   sleep(1000)
+
+   getTutReward()
+   ;missao construir ponto de reuniao militar
+   _FFOpenURL("/build.php?id=39") ; Para garantir que o travian deteta que abri o ponto de reu.militar
+   sleep(1000)
+   buildBuilding("prm") ; Construir Ponto de Reunião Militar
+   sleep(1000)
+   getTutReward()
+   sleep(1000)
+
+
+
+   ; missao terminar de imediato
+   smartURL("/dorf2.php")
+   sleep(1000)
+   _FFCmd(".getElementsByClassName('gold highlighted on')[0].click()")
+   sleep(1000)
+   _FFCmd(".getElementsByClassName('gold highlighted on')[0].click()")
+   sleep(1000)
+   getTutReward()
+
+
+   ; missao enviar heroi em aventura
+   _FFOpenURL("/hero_adventure.php")
+   $adventureURL = _FFCmd(".getElementsByClassName('gotoAdventure arrow highlighted on')[1].href")
+   _FFOpenURL($adventureURL)
+   _FFCmd(".getElementById('start').click()")
+   sleep(1000)
+   getTutReward()
+
+
+   ;missao ler relatorio de aventura
+   _FFOpenUrl("/berichte.php")
+   sleep(1000)
+   $reportURL = _FFCmd(".getElementsByClassName('adventure')[0].href")
+   _FFOpenURL($reportURL)
+   sleep(1000)
+   getTutReward()
+
+
+   _FFOpenURL("/hero_inventory.php")
+   sleep(1000)
+   _FFCmd(".getElementsByClassName('item male_item_106 highlighted on')[0].click()"); clica na poçao de cura
+   sleep(1000)
+   _FFCmd(".getElementsByClassName('green ok dialogButtonOk')[0].click()")
+   sleep(1000)
+   getTutReward()
+   sleep(2000)
+
+   ;missao de ver interface do travian
+   _FFCmd(".getElementsByClassName('layoutButton bulbWhite green  highlighted on')[0].click()")
+   sleep(1000)
+   _FFCmd(".getElementsByClassName('overlayCloseLink')[0].click()") ; fechar a ajuda
+   sleep(1000)
+
+   getTutReward()
+
+   ;evoluir armazem porque os recursos devem estar cheios neste momento
+   ;upgradeBuilding(19)
+
+   ;construir celeiro
+   sleep(1000)
+   buildBuilding("celeiro")
+   sleep(1000)
+   getTutReward()
+   ;acabar tutorial
+   sleep(1000)
+   getTutReward()
+
+EndFunc
+Func getMissionRewards() ;gets mission rewards, code needs cleanup for noerror of firefox
+>>>>>>> origin/master
 	Local $availableReward[10]
 	Sleep(1000)
 	For $i = 0 To 5
@@ -585,3 +836,22 @@ While getCurrentlvl("Wo")<3 || getCurrentlvl("Cl")< 3 || getCurrentlvl("Ir")< 3 
 	If TimerDiff($timer) > 69; START EDIT HERE
 	WEnd
 EndFunc   ;==>thinkV01
+
+	;Evolui recursos todos para nível 3;
+	;Coloca edificio principal nivel 5;
+	;Armazem nivel2;
+	;Celeiro nivel2;
+	;Evolui recursos todos para 4;
+	;PontoReuniaoMilitar nivel 1;
+	;Quartel nivel3;
+	;Recursos todos para 5;
+	;Academia nivel5;
+	;Ferreiro nivel3;
+	;Cavalarica nivel 3;
+	;Armazem nivel 4;
+	;Pesquisar Cavalo Theutate;
+
+
+EndFunc   ;==>thinkV01
+
+
